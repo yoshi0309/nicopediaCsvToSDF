@@ -26,6 +26,7 @@ def main(options, args):
             
             json_data = {'type':'add','id':row[0],'fields':{'body':body,'mdate':row[2]}}
             json.dump(json_data,writer,ensure_ascii=False)
+            writer.write(',')
         writer.write(']')
 
 if __name__ == '__main__': 
