@@ -13,18 +13,23 @@ def main(options, args):
         csv.field_size_limit(1000000000)
         writer.write('[')
         for row in reader:
-            # json_data = {'id':row[0],'body':row[1],'mdate':row[2]}
             body = row[1]
+            
+            # get title
+            p = re.compile(r"<[^>]*?>")
+            i = body.index('\n')
+            title = body[:i]
+            title = p.sub("", title)
+            
             body = body.replace('\r','')
             body = body.replace('\n','')
             body = body.replace('\\','')
             body = body.replace('&nbsp;',' ')
             
             # remove html tags from body.
-            p = re.compile(r"<[^>]*?>")
             body = p.sub(" ", body)
             
-            json_data = {'type':'add','id':row[0],'fields':{'body':body,'mdate':row[2]}}
+            json_data = {'type':'add','id':row[0],'fields':{'title':title,'body':body}}
             json.dump(json_data,writer,ensure_ascii=False)
             writer.write(',')
         writer.write(']')
