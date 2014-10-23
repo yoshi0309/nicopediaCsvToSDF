@@ -12,7 +12,19 @@ def main(options, args):
         writer = open(options.out, 'w')
         csv.field_size_limit(1000000000)
         writer.write('[')
+
+        rec_count = 0
         for row in reader:
+            rec_count = rec_count+1
+            if options.limit == -1:
+                None
+            elif rec_count > options.limit:
+                break
+
+            if rec_count > 1 :
+                writer.write(',')
+            
+            # json_data = {'id':row[0],'body':row[1],'mdate':row[2]}
             body = row[1]
             
             # get title
@@ -31,7 +43,7 @@ def main(options, args):
             
             json_data = {'type':'add','id':row[0],'fields':{'title':title,'body':body}}
             json.dump(json_data,writer,ensure_ascii=False)
-            writer.write(',')
+            
         writer.write(']')
 
 if __name__ == '__main__': 
@@ -39,5 +51,6 @@ if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option('-f', '--file', dest='file', help='csv file path.')
     parser.add_option('-o', '--out', dest='out', help='output file path.')
+    parser.add_option('-l', '--limit', dest='limit', type='int', default=-1, help='output file path.')
     options, args = parser.parse_args(sys.argv[1:])
     sys.exit(main(options, args))
